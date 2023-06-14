@@ -1,4 +1,7 @@
+using KrakenGamingTest.Player;
 using KrakenGamingTest.ScriptableObjects.Obstacles;
+using System;
+using System.Collections;
 using UnityEngine;
 
 namespace KrakenGamingTest.Obstacles
@@ -7,11 +10,16 @@ namespace KrakenGamingTest.Obstacles
     {
         [SerializeField] private Rigidbody rb;
         [SerializeField] private BarrelData barrelData;
+        [SerializeField] private ScoreManager scoreManager;
+        [SerializeField] private Transform playerJumpArea;
 
+        private Collider[] playerJumpAreaHit = new Collider[1];
         private Vector3 _direction;
         private float _movementSpeed;
         private bool _canMove;
         private bool _canFallFromStairs;
+
+        private Action OnPlayerJumpOver;
 
         public void SetBarrelCanMove(bool canMove) => _canMove = canMove;
 
@@ -30,6 +38,8 @@ namespace KrakenGamingTest.Obstacles
             _direction = transform.right;
             _movementSpeed = barrelData.speedOnGround;
             _canMove = true;
+            OnPlayerJumpOver += scoreManager.BarrelJumped;
+            StartCoroutine(CastPlayerJumpArea());
         }
 
         private void Move()
@@ -43,7 +53,6 @@ namespace KrakenGamingTest.Obstacles
             }
 
             rb.MovePosition(transform.position + _direction * _movementSpeed * Time.deltaTime);
-
         }
 
 
@@ -59,7 +68,7 @@ namespace KrakenGamingTest.Obstacles
                            
             if (canFallFromStairs)
             {             
-                var fallFromStairsChance = Random.Range(0, 101);
+                var fallFromStairsChance = UnityEngine.Random.Range(0, 101);
                 if (fallFromStairsChance > barrelData.fallFromStairsChance)
                     return;
                 rb.velocity = Vector3.zero;              
@@ -80,13 +89,32 @@ namespace KrakenGamingTest.Obstacles
             _movementSpeed = barrelData.speedOnAir;
         }
 
+        public virtual void DestroyBarrel()
+        {
+            Destroy(gameObject);
+        }
+
+        private IEnumerator CastPlayerJumpArea()
+        {
+            while(true)
+            {
+                var playerCount = Physics.OverlapBoxNonAlloc(playerJumpArea.transform.position, playerJumpArea.localScale / 2, playerJumpAreaHit, playerJumpArea.rotation, barrelData.playerLayerMask);
+                if (playerCount > 0)
+                {
+                    OnPlayerJumpOver?.Invoke();
+                    break;
+                }
+                yield return null;
+            }
+        }
+
         private void OnCollisionEnter(Collision collision)
         {
             if (!GameStaticFunctions.IsGoInLayerMask(collision.gameObject, barrelData.bounceLayerMask))
                 return;
 
             _movementSpeed = barrelData.speedOnGround;
-            var flipChance = Random.Range(0, 101);
+            var flipChance = UnityEngine.Random.Range(0, 101);
             if (flipChance <= barrelData.flipChance)
                 FlipDirection();
         }

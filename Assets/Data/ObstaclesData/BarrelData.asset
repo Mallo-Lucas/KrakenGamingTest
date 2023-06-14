@@ -14,8 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speedOnGround: 8
   speedOnAir: 5
-  flipChance: 80
+  flipChance: 90
   fallFromStairsChance: 30
   bounceLayerMask:
     serializedVersion: 2
     m_Bits: 1024
+  playerLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
