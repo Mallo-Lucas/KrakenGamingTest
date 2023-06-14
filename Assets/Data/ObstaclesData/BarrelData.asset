@@ -9,8 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a1c90dcbb9f9dc4eb21cc501f497f68, type: 3}
-  m_Name: PlayerData
+  m_Script: {fileID: 11500000, guid: 451bc49cabbf3d2429ec99b9db7ee0bc, type: 3}
+  m_Name: BarrelData
   m_EditorClassIdentifier: 
-  playerSpeed: 10
-  playerJumpForce: 10
+  speedOnGround: 8
+  speedOnAir: 5
+  flipChance: 80
+  fallFromStairsChance: 30
+  bounceLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024

@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,7 +6,7 @@ namespace KrakenGamingTest.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        public event Action<float> OnMove;
+        public event Action<Vector3> OnMove;
         public event Action OnJump;
 
         [SerializeField] private PlayerModel playerModel;
@@ -45,7 +43,7 @@ namespace KrakenGamingTest.Player
 
         private void MoveAction(InputAction.CallbackContext context)
         {
-            OnMove?.Invoke(context.ReadValue<Vector2>().x);
+            OnMove?.Invoke(context.ReadValue<Vector2>());
         }
 
         private void JumpAction(InputAction.CallbackContext context)
