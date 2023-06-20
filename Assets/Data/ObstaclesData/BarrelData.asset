@@ -16,9 +16,9 @@ MonoBehaviour:
   speedOnAir: 5
   flipChance: 90
   fallFromStairsChance: 30
-  bounceLayerMask:
+  collisionLayerMask:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 1152
   playerLayerMask:
     serializedVersion: 2
     m_Bits: 128

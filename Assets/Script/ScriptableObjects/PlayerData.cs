@@ -8,9 +8,14 @@ namespace KrakenGamingTest.ScriptableObjects.Player
     public class PlayerData : ScriptableObject
     {
         [Header("Player Stats")]
+        public int playerLifes;
         public float playerSpeedOnGround;
         public float playerSpeedOnAir;
         public float playerJumpForce;
+        public float playerDeathForce;
+
+        [Header("Layers")]
+        public LayerMask goundLayers;
     }
 }
 

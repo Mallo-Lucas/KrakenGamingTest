@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace KrakenGamingTest.Obstacles
 {
-    public class NormalBarrel : MonoBehaviour
+    public class NormalBarrel : Obstacle
     {
         [SerializeField] private Rigidbody rb;
         [SerializeField] private BarrelData barrelData;
@@ -89,11 +89,6 @@ namespace KrakenGamingTest.Obstacles
             _movementSpeed = barrelData.speedOnAir;
         }
 
-        public virtual void DestroyBarrel()
-        {
-            Destroy(gameObject);
-        }
-
         private IEnumerator CastPlayerJumpArea()
         {
             while(true)
@@ -108,10 +103,23 @@ namespace KrakenGamingTest.Obstacles
             }
         }
 
+        public override void HurtPlayer(PlayerModel player)
+        {
+            base.HurtPlayer(player);
+            player.PlayerGetDamage();
+        }
+
         private void OnCollisionEnter(Collision collision)
         {
-            if (!GameStaticFunctions.IsGoInLayerMask(collision.gameObject, barrelData.bounceLayerMask))
+            if (!GameStaticFunctions.IsGoInLayerMask(collision.gameObject, barrelData.collisionLayerMask))
                 return;
+
+            if(collision.gameObject.TryGetComponent(out PlayerModel player))
+            {
+                _canMove = false;
+                HurtPlayer(player);
+                return;
+            }
 
             _movementSpeed = barrelData.speedOnGround;
             var flipChance = UnityEngine.Random.Range(0, 101);

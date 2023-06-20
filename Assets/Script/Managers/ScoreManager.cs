@@ -1,3 +1,4 @@
+using KrakenGamingTest.Player;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +6,9 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     [SerializeField] private GamePointsData gamePointsData;
+    [SerializeField] private InGameUIManager inGameUIManager;
     [SerializeField] private UIEvent uiEvent;
+    [SerializeField] private PlayerModel playerModel;
 
     private int _currentScore;
     private int _bonusScore;
@@ -33,7 +36,26 @@ public class ScoreManager : MonoBehaviour
     private void Initialize()
     {
         _bonusScore = gamePointsData.bonusScore;
+        UpdateBonusScoreUi();
+        playerModel.OnGetDamage += PlayerLost;
+        inGameUIManager.FadeOutScreenEnd += StartGame;
+        inGameUIManager.FadeInScreenEnd += SetInitialBonusScore;
+    }
+
+    private void PlayerLost(int value)
+    {
+        StopAllCoroutines();       
+    }
+
+    private void StartGame()
+    {       
         StartCoroutine(SubstractBonusScore());
+    }
+
+    private void SetInitialBonusScore()
+    {
+        _bonusScore = gamePointsData.bonusScore;
+        UpdateBonusScoreUi();
     }
 
     private IEnumerator SubstractBonusScore()

@@ -7,7 +7,10 @@ using UnityEngine.Events;
 public enum UICommands
 {
     CHANGE_SCORE,
-    CHANGE_BONUS_SCORE
+    CHANGE_BONUS_SCORE,
+    SET_PLAYERS_HEARTS,
+    FADE_SCREEN_IN,
+    FADE_SCREEN_OUT
 }
 
 [System.Serializable]

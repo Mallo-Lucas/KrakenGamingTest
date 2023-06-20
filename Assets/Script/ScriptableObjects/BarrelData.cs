@@ -9,7 +9,7 @@ namespace KrakenGamingTest.ScriptableObjects.Obstacles
         public float speedOnAir;
         [Range(0,100)]public float flipChance;
         [Range(0,100)]public float fallFromStairsChance;
-        public LayerMask bounceLayerMask;
+        public LayerMask collisionLayerMask;
         public LayerMask playerLayerMask;
     }
 }
