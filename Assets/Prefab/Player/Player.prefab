@@ -54,7 +54,6 @@ MonoBehaviour:
   rb: {fileID: 5177558496743381891}
   playerCollider: {fileID: 5177558496743381915}
   playerView: {fileID: 5177558496743381914}
-  inGameUIManager: {fileID: 0}
 --- !u!114 &5177558496743381916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,8 +143,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1.9852285, z: 1}
-  m_Center: {x: 0, y: -0.13434935, z: 0}
+  m_Size: {x: 1, y: 2.8030982, z: 1}
+  m_Center: {x: 0, y: 0.27458555, z: 0}
 --- !u!1001 &5177558495391422004
 PrefabInstance:
   m_ObjectHideFlags: 0

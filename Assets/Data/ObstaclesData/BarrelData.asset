@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speedOnGround: 8
   speedOnAir: 5
+  rotationSpeed: 8
   flipChance: 90
   fallFromStairsChance: 30
   collisionLayerMask:

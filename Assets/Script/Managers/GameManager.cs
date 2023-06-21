@@ -6,13 +6,17 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private UIEvent uiEvent;
-    [SerializeField] private InGameUIManager gameUIManager;
     [SerializeField] private PlayerModel playerModel;
     [SerializeField] private Transform spawnPosition;
+    [SerializeField] private Transform winArea;
+    [SerializeField] private LayerMask playerLayer;
 
-    private void Awake()
+    private Collider[] winAreaObjects = new Collider[1];
+
+    private void Start()
     {
-        gameUIManager.FadeInScreenEnd += RespawnPlayer;
+        LevelEventsHandler.Instance.SubscribeToFadeInEvent(RespawnPlayer);
+        StartCoroutine(CastPlayerWinArea());
     }
 
     private void RespawnPlayer()
@@ -23,5 +27,19 @@ public class GameManager : MonoBehaviour
             Value = 2
         });
         playerModel.RespawnPlayer(spawnPosition);
+    }
+
+    private IEnumerator CastPlayerWinArea()
+    {
+        while (true)
+        {
+            var playerCount = Physics.OverlapBoxNonAlloc(winArea.transform.position, winArea.localScale / 2, winAreaObjects, winArea.rotation, playerLayer);
+            if (playerCount > 0)
+            {
+                LevelEventsHandler.Instance.PlayerWinLevel();
+                break;
+            }
+            yield return null;
+        }
     }
 }

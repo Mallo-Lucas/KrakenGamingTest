@@ -20,3 +20,10 @@ MonoBehaviour:
   goundLayers:
     serializedVersion: 2
     m_Bits: 64
+  obstaclesLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  sizeOnCrouch: {x: 1, y: 1.9852285, z: 1}
+  centerOnCrouch: {x: 0, y: -0.13434935, z: 0}
+  sizeOnStand: {x: 1, y: 2.803098, z: 1}
+  centerOnStand: {x: 0, y: 0.2745855, z: 0}

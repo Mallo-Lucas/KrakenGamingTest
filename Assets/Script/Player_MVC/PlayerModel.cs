@@ -5,20 +5,27 @@ using UnityEngine;
 
 namespace KrakenGamingTest.Player
 {
-    public class PlayerModel : MonoBehaviour
+    public class PlayerModel : MonoBehaviour, I_Pause
     {
         [SerializeField] private PlayerData playerData;
         [SerializeField] private Rigidbody rb;
-        [SerializeField] private Collider playerCollider;
+        [SerializeField] private BoxCollider playerCollider;
         [SerializeField] private PlayerView playerView;
-        [SerializeField] private InGameUIManager inGameUIManager;
+        [SerializeField] private GameObject sword;
+        [SerializeField] private Transform swordAttackArea;
 
+        private PlayerAbility _playerAbility;
+
+        private Collider[] playerSwordAreaHit = new Collider[3];
         private Vector3 _movementDirection;
         private float _movementSpeed;
         private bool _canMove;
         private bool _onGround;
         private bool _canClimb;
+        private bool _onCrouch;
+        private bool _onUseAbility;
         private int _playerLifes;
+        private int _playerAbilityStack;
 
         public PlayerData GetPlayerData() => playerData;
         public void SetPlayerCanMove(bool value) => _canMove = value;
@@ -26,11 +33,13 @@ namespace KrakenGamingTest.Player
         public event Action<Vector3> OnMove;
         public event Action<bool> OnClimb;
         public event Action<bool> OnGround;
+        public event Action<bool> OnCrouch;
         public event Action<int> OnGetDamage;
         public event Action OnJump;
         public event Action OnRespawn;
+        public event Action UseSword;
 
-        private void Awake()
+        private void Start()
         {
             Initialize();
         }
@@ -39,11 +48,14 @@ namespace KrakenGamingTest.Player
         {
             _canMove = false;
             _onGround = true;
+            _onCrouch = false;
             _movementSpeed = playerData.playerSpeedOnGround;
             _playerLifes = playerData.playerLifes;
-            inGameUIManager.FadeOutScreenEnd += delegate { SetPlayerCanMove(true); };
+            LevelEventsHandler.Instance.SubscribeToFadeOutEvent(delegate { SetPlayerCanMove(true); });
+            LevelEventsHandler.Instance.PlayerWin += delegate { SetPlayerCanMove(false); };
             playerView.GetSubscriptionsEvents(this);
             StartCoroutine(CheckIfPlayerIsOnGround());
+            SubscribeToPause(this);
         }
 
         private void FixedUpdate()
@@ -65,13 +77,76 @@ namespace KrakenGamingTest.Player
 
         private void Jump()
         {
-            if (!_onGround || _canClimb || !_canMove)
+            if (!_onGround || _canClimb || !_canMove || _onCrouch)
                 return;
             rb.velocity = Vector3.zero;
             rb.AddForce(transform.up * playerData.playerJumpForce, ForceMode.Impulse);
             _onGround = false;
             _movementSpeed = playerData.playerSpeedOnAir;
             OnJump?.Invoke();
+        }
+
+        private void Crouch(bool state)
+        {
+            if (!_onGround || !_canMove)
+                return;
+            OnCrouch?.Invoke(state);
+            _onCrouch = state;
+            if (state)
+            {
+                playerCollider.size = playerData.sizeOnCrouch;
+                playerCollider.center = playerData.centerOnCrouch;
+                return;
+            }
+            playerCollider.size = playerData.sizeOnStand;
+            playerCollider.center = playerData.centerOnStand;
+        }
+
+        private void UseAbility()
+        {
+            if (_playerAbilityStack <= 0 || _onUseAbility)
+                return;
+            _playerAbilityStack--;
+            _playerAbility.UseAbility(this);
+            if (_playerAbilityStack == 0)
+                _playerAbility.AbilityRemove(this);
+        }
+
+        public void AddAbility(PlayerAbility playerAbility)
+        {
+            _playerAbility = playerAbility;
+            _playerAbilityStack = _playerAbility.abilityStack;
+            _playerAbility.AbilityAdded(this);
+        }
+
+        public void EnableSword(bool state)
+        {
+            sword.gameObject.SetActive(state);
+        }
+
+        public void AttacSword()
+        {
+            StartCoroutine(AttackSwordCoroutine());
+        }
+
+        private IEnumerator AttackSwordCoroutine()
+        {
+            _onUseAbility = true;
+            _canMove = false;
+            UseSword?.Invoke();
+            var timer = 1f;
+            while (timer>0)
+            {
+                timer -= Time.deltaTime;
+                var obstaclesCount = Physics.OverlapBoxNonAlloc(swordAttackArea.position, swordAttackArea.localScale / 2, playerSwordAreaHit, swordAttackArea.rotation, playerData.obstaclesLayer);
+                for (int i = 0; i < obstaclesCount; i++)
+                {
+                    playerSwordAreaHit[i].GetComponent<Obstacle>().DestroyObstacleWhitScore();
+                }
+                yield return null;
+            }
+            _onUseAbility = false;
+            _canMove = true;
         }
 
         private void SetPlayerMovementDirection(Vector3 direction)
@@ -85,6 +160,8 @@ namespace KrakenGamingTest.Player
         {
             controller.OnMove += SetPlayerMovementDirection;
             controller.OnJump += Jump;
+            controller.OnCrouch += Crouch;
+            controller.OnAbility += UseAbility;
         }
 
         public void SetCanClimb(bool state)
@@ -138,7 +215,22 @@ namespace KrakenGamingTest.Player
             transform.position = spawnPoint.position;
             transform.rotation = spawnPoint.rotation;
             _canMove = false;
+            _onGround = true;
+            _canClimb = false;
+            _onCrouch = false;
+            rb.useGravity = true;
+            _movementSpeed = playerData.playerSpeedOnGround;
             OnRespawn?.Invoke();
+        }
+
+        public void Pause(bool state)
+        {
+            _canMove = !state;
+        }
+
+        public void SubscribeToPause(I_Pause ipause)
+        {
+            LevelEventsHandler.Instance.SubscribeToPauseMenu(ipause);
         }
     }
 }

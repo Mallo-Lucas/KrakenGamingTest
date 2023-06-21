@@ -6,7 +6,6 @@ using UnityEngine;
 public class ScoreManager : MonoBehaviour
 {
     [SerializeField] private GamePointsData gamePointsData;
-    [SerializeField] private InGameUIManager inGameUIManager;
     [SerializeField] private UIEvent uiEvent;
     [SerializeField] private PlayerModel playerModel;
 
@@ -16,7 +15,7 @@ public class ScoreManager : MonoBehaviour
     private float _barrelsJumpedConsecutivelyTimer;
     private bool _barrelsJumped;
 
-    private void Awake()
+    private void Start()
     {
         Initialize();
     }
@@ -33,13 +32,20 @@ public class ScoreManager : MonoBehaviour
         _barrelsJumped = true;
     }
 
+    public void ShurikenEvade()
+    {
+        _currentScore += gamePointsData.evadeShurikenPoint;
+        UpdateScoreUi();
+    }
+
     private void Initialize()
     {
         _bonusScore = gamePointsData.bonusScore;
         UpdateBonusScoreUi();
         playerModel.OnGetDamage += PlayerLost;
-        inGameUIManager.FadeOutScreenEnd += StartGame;
-        inGameUIManager.FadeInScreenEnd += SetInitialBonusScore;
+        LevelEventsHandler.Instance.SubscribeToFadeOutEvent(StartGame);
+        LevelEventsHandler.Instance.SubscribeToFadeInEvent(SetInitialBonusScore);
+        LevelEventsHandler.Instance.PlayerWin += GetFinalScore;
     }
 
     private void PlayerLost(int value)
@@ -56,6 +62,14 @@ public class ScoreManager : MonoBehaviour
     {
         _bonusScore = gamePointsData.bonusScore;
         UpdateBonusScoreUi();
+    }
+
+    private void GetFinalScore()
+    {
+        _currentScore += _bonusScore;
+        _bonusScore = 0;
+        UpdateBonusScoreUi();
+        UpdateScoreUi();
     }
 
     private IEnumerator SubstractBonusScore()

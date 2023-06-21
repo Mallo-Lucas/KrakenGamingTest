@@ -16,6 +16,13 @@ namespace KrakenGamingTest.ScriptableObjects.Player
 
         [Header("Layers")]
         public LayerMask goundLayers;
+        public LayerMask obstaclesLayer;
+
+        [Header("Collider Changes")]
+        public Vector3 sizeOnCrouch;
+        public Vector3 centerOnCrouch;
+        public Vector3 sizeOnStand;
+        public Vector3 centerOnStand;
     }
 }
 

@@ -6,46 +6,43 @@ using UnityEngine;
 
 namespace KrakenGamingTest.Obstacles
 {
-    public class NormalBarrel : Obstacle
+    public class NormalBarrel : Obstacle, I_Pause
     {
         [SerializeField] private Rigidbody rb;
         [SerializeField] private BarrelData barrelData;
-        [SerializeField] private ScoreManager scoreManager;
         [SerializeField] private Transform playerJumpArea;
-
+        [SerializeField] private Transform visual;
+      
         private Collider[] playerJumpAreaHit = new Collider[1];
         private Vector3 _direction;
         private float _movementSpeed;
-        private bool _canMove;
+        private float _rotationSpeed;
         private bool _canFallFromStairs;
 
         private Action OnPlayerJumpOver;
-
-        public void SetBarrelCanMove(bool canMove) => _canMove = canMove;
-
-        private void Awake()
-        {
-            Initialize();
-        }
 
         private void FixedUpdate()
         {
             Move();
         }
 
-        private void Initialize()
+        public override void Initialize(Vector3 dir, ObstaclesSpawnSystem obstaclesSpawnSystem)
         {
-            _direction = transform.right;
+            base.Initialize(dir, obstaclesSpawnSystem);
+            _direction = dir;
             _movementSpeed = barrelData.speedOnGround;
             _canMove = true;
-            OnPlayerJumpOver += scoreManager.BarrelJumped;
-            StartCoroutine(CastPlayerJumpArea());
+            _rotationSpeed = barrelData.rotationSpeed;
+            OnPlayerJumpOver += LevelEventsHandler.Instance.GetScoreManagerBarrelEvent();
+            StartCoroutine(CastPlayerEvadeArea());
+            SubscribeToPause(this);
         }
 
         private void Move()
         {
             if (!_canMove)
                 return;
+            visual.transform.Rotate(new Vector3(0, _rotationSpeed, 0));
             if (_canFallFromStairs)
             {
                 rb.MovePosition(transform.position + Vector3.down * _movementSpeed * Time.deltaTime);
@@ -56,9 +53,10 @@ namespace KrakenGamingTest.Obstacles
         }
 
 
-        public void FlipDirection()
+        public override void FlipDirection()
         {
             _direction.x *= -1;
+            _rotationSpeed *= -1;
         }
 
         public void SetBarrelCanFallFromStairs(bool canFallFromStairs)
@@ -89,7 +87,21 @@ namespace KrakenGamingTest.Obstacles
             _movementSpeed = barrelData.speedOnAir;
         }
 
-        private IEnumerator CastPlayerJumpArea()
+        public override void DestroyObstacle()
+        {
+            _obstaclesSpawnSystem.RemoveObstacle(this);
+            base.DestroyObstacle();
+            OnPlayerJumpOver = null;
+        }
+
+        public override void DestroyObstacleWhitScore()
+        {
+            for (int i = 0; i < 2; i++)
+                OnPlayerJumpOver?.Invoke();
+            DestroyObstacle();
+        }
+
+        public override IEnumerator CastPlayerEvadeArea()
         {
             while(true)
             {
@@ -107,6 +119,8 @@ namespace KrakenGamingTest.Obstacles
         {
             base.HurtPlayer(player);
             player.PlayerGetDamage();
+            OnPlayerJumpOver = null;
+            rb.isKinematic = true;
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -125,6 +139,16 @@ namespace KrakenGamingTest.Obstacles
             var flipChance = UnityEngine.Random.Range(0, 101);
             if (flipChance <= barrelData.flipChance)
                 FlipDirection();
+        }
+
+        public void Pause(bool state)
+        {
+            _canMove = !state;
+        }
+
+        public void SubscribeToPause(I_Pause ipause)
+        {
+            LevelEventsHandler.Instance.SubscribeToPauseMenu(ipause);
         }
     }
 }
