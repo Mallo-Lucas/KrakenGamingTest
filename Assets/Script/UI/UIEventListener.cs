@@ -11,7 +11,10 @@ public enum UICommands
     SET_PLAYERS_HEARTS,
     FADE_SCREEN_IN,
     FADE_SCREEN_OUT,
-    GAME_OVER
+    GAME_OVER,
+    ACTIVATE_ABILITY_UI,
+    CHANGE_ABILITY_ICON,
+    CHANEGE_ABILITY_AMMOUNT,
 }
 
 [System.Serializable]
@@ -19,6 +22,8 @@ public struct UIParameters
 {
     public UICommands Command;
     public float Value;
+    public bool State;
+    public Sprite Sprite;
 }
 
 [System.Serializable]

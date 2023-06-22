@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: PlayerAbilitySwordAttack
   m_EditorClassIdentifier: 
   abilityStack: 3
+  abilityIcon: {fileID: 21300000, guid: c8d84a926c899234bbc737e98acf4ed0, type: 3}

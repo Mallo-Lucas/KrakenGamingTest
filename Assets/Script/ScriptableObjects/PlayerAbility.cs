@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class PlayerAbility : ScriptableObject
 {
-    public int abilityStack;
+    public float abilityStack;
+    public Sprite abilityIcon;
 
     public virtual void UseAbility(PlayerModel player)
     {

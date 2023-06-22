@@ -35,9 +35,11 @@ namespace KrakenGamingTest.Player
         public event Action<bool> OnGround;
         public event Action<bool> OnCrouch;
         public event Action<int> OnGetDamage;
+        public event Action<float> OnUseAbility;
         public event Action OnJump;
         public event Action OnRespawn;
         public event Action UseSword;
+        public event Action<Sprite,float, bool> GetAbility;
 
         private void Start()
         {
@@ -108,15 +110,20 @@ namespace KrakenGamingTest.Player
                 return;
             _playerAbilityStack--;
             _playerAbility.UseAbility(this);
+            OnUseAbility?.Invoke(_playerAbilityStack);
             if (_playerAbilityStack == 0)
+            {
                 _playerAbility.AbilityRemove(this);
+                GetAbility?.Invoke(_playerAbility.abilityIcon, _playerAbility.abilityStack, false);
+            }
         }
 
         public void AddAbility(PlayerAbility playerAbility)
         {
             _playerAbility = playerAbility;
-            _playerAbilityStack = _playerAbility.abilityStack;
+            _playerAbilityStack = (int)_playerAbility.abilityStack;
             _playerAbility.AbilityAdded(this);
+            GetAbility?.Invoke(_playerAbility.abilityIcon, _playerAbility.abilityStack, true);
         }
 
         public void EnableSword(bool state)

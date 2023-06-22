@@ -3,6 +3,7 @@ using KrakenGamingTest.ScriptableObjects.Player;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerView : MonoBehaviour
 {
@@ -38,6 +39,8 @@ public class PlayerView : MonoBehaviour
         player.OnRespawn += RespawnPlayerHandler;
         player.OnCrouch += CrouchAnimationHandler;
         player.UseSword += PlayerAttackHandler;
+        player.GetAbility += SetAbilityOnUI;
+        player.OnUseAbility += OnUseAbilityUi;
         _playerVisual = animator.transform;
         _playerData = player.GetPlayerData();
         SetPlayersHearts(player.GetPlayerData().playerLifes);
@@ -155,5 +158,39 @@ public class PlayerView : MonoBehaviour
         animator.gameObject.SetActive(true);
         _playerVisual.rotation = Quaternion.Euler(0, -90, 0);
         Destroy(_lastRagdollCreated);
+    }
+
+    private void OnUseAbilityUi(float value)
+    {
+        uiEvent.Raise(new UIParameters()
+        {
+            Command = UICommands.CHANEGE_ABILITY_AMMOUNT,
+            Value = value
+        });
+    }
+
+    private void SetAbilityOnUI(Sprite sprite, float value, bool state)
+    {
+        if (state)
+        {
+            uiEvent.Raise(new UIParameters()
+            {
+                Command = UICommands.CHANGE_ABILITY_ICON,
+                Sprite = sprite
+            });
+            OnUseAbilityUi(value);
+            uiEvent.Raise(new UIParameters()
+            {
+                Command = UICommands.ACTIVATE_ABILITY_UI,
+                State = state
+            });
+
+            return;
+        }
+        uiEvent.Raise(new UIParameters()
+        {
+            Command = UICommands.ACTIVATE_ABILITY_UI,
+            State = state
+        });
     }
 }
