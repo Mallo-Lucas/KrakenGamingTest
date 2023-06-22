@@ -16,6 +16,7 @@ MonoBehaviour:
   rotationSpeed: -15
   goDownSpeed: 6.8
   timeOnFlip: 1
+  chancesToGoDown: 90
   playerLayerMask:
     serializedVersion: 2
     m_Bits: 128

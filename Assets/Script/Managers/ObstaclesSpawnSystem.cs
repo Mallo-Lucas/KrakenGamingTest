@@ -15,20 +15,23 @@ public class ObstaclesSpawnSystem : MonoBehaviour
     private static readonly WaitForSeconds WaitForSpawnObstacle = new WaitForSeconds(0.8f);
     private static readonly string THROW_ANIMATION = "Throw";
 
+    private void Awake()
+    {
+        StartSpawn();
+    }
+
     private void Start()
     {
-        LevelEventsHandler.Instance.SubscribeToFadeOutEvent(StartSpawn);
+        LevelEventsHandler.Instance.SubscribeToFadeInEvent(StartSpawn);
         LevelEventsHandler.Instance.SubscribeToFadeInEvent(DestroyAllObstacles);
         LevelEventsHandler.Instance.PlayerWin += delegate { StopSpawn(0); };
-        player.OnGetDamage += StopSpawn;
+        player.OnGetDamage += StopSpawn;       
     }
 
     private void DestroyAllObstacles()
     {
-        foreach (var obstacle in _obstaclesCreated)
-        {
-            obstacle.DestroyObstacle();
-        }
+        for (int i = 0; i < _obstaclesCreated.Count; i++)
+            _obstaclesCreated[i].DestroyObstacle();
         _obstaclesCreated.Clear();
     }
 
@@ -59,7 +62,7 @@ public class ObstaclesSpawnSystem : MonoBehaviour
         var obstacleTransform = newObstacle.transform;
         obstacleTransform.position = spawnPoint.position;
         obstacleTransform.rotation = spawnPoint.rotation;
-        newObstacle.Initialize(spawnPoint.forward,this);
+        newObstacle.Initialize(spawnPoint.forward, this);
         _obstaclesCreated.Add(newObstacle);
         while (true)
         {
@@ -71,7 +74,7 @@ public class ObstaclesSpawnSystem : MonoBehaviour
             obstacleTransform = newObstacle.transform;
             obstacleTransform.position = spawnPoint.position;
             obstacleTransform.rotation = spawnPoint.rotation;
-            newObstacle.Initialize(spawnPoint.forward,this);
+            newObstacle.Initialize(spawnPoint.forward, this);
             _obstaclesCreated.Add(newObstacle);
         }
     }

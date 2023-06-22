@@ -81,6 +81,10 @@ public class NormalShuriken : Obstacle, I_Pause
 
     public override void FlipDirection()
     {
+        var r = UnityEngine.Random.Range(0, 101);
+        if (r > shurikenData.chancesToGoDown)
+            return;
+
         StartCoroutine(FlipShuriken());
     }
 

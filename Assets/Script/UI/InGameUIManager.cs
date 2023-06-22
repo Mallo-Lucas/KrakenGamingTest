@@ -11,6 +11,9 @@ public class InGameUIManager : MonoBehaviour
     [SerializeField] private TMP_Text bonusScoreText;
     [SerializeField] private GameObject hearthPrefab;
     [SerializeField] private Transform hearthContainers;
+    [SerializeField] private GameObject gameOverMenu;
+    [SerializeField] private Button backToMainMenuButton;
+    [SerializeField] private Button quitButton;
     [SerializeField] private Image blackScreen;
 
     private List<GameObject> _heartsCreatedList = new List<GameObject>();
@@ -21,6 +24,9 @@ public class InGameUIManager : MonoBehaviour
 
     private void Awake()
     {
+        quitButton.onClick.AddListener(QuitGame);
+        backToMainMenuButton.onClick.AddListener(BackToMainMenu);
+
         _uiEventDeployer = new Dictionary<int, Action<float>>()
         {
            { (int)UICommands.CHANGE_SCORE, ChangeScore },
@@ -28,6 +34,7 @@ public class InGameUIManager : MonoBehaviour
            { (int)UICommands.SET_PLAYERS_HEARTS, SetPlayerHearts },
            { (int)UICommands.FADE_SCREEN_IN, BlackScreenFadeIn },
            { (int)UICommands.FADE_SCREEN_OUT, BlackScreenFadeOut },
+           { (int)UICommands.GAME_OVER, OpenGameOverMenu },
         };
 
         BlackScreenFadeOut(2);
@@ -56,6 +63,21 @@ public class InGameUIManager : MonoBehaviour
             newHeart.transform.parent = hearthContainers.transform;
             _heartsCreatedList.Add(newHeart);
         }
+    }
+
+    private void OpenGameOverMenu(float value)
+    {
+        gameOverMenu.SetActive(true);
+    }
+
+    private void BackToMainMenu()
+    {
+        ChangeSceneManager.Instance.GoToMainMenu();
+    }
+
+    private void QuitGame()
+    {
+        Application.Quit();
     }
 
     private void BlackScreenFadeIn(float time)

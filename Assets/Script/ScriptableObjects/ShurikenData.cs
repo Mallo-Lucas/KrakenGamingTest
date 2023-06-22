@@ -9,6 +9,7 @@ public class ShurikenData : ScriptableObject
     public float rotationSpeed;
     public float goDownSpeed;
     public float timeOnFlip;
+    [Range(0, 100)] public float chancesToGoDown;
     public LayerMask playerLayerMask;
     public LayerMask collisionLayerMask;
 }

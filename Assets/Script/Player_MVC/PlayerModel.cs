@@ -134,7 +134,7 @@ namespace KrakenGamingTest.Player
             _onUseAbility = true;
             _canMove = false;
             UseSword?.Invoke();
-            var timer = 1f;
+            var timer = 0.8f;
             while (timer>0)
             {
                 timer -= Time.deltaTime;

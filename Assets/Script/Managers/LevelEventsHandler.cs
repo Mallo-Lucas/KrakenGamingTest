@@ -23,6 +23,12 @@ public class LevelEventsHandler : MonoBehaviour
         PlayerWin?.Invoke();
     }
 
+    public void ClearFadeScreenEvents()
+    {
+        gameUIManager.FadeInScreenEnd = null;
+        gameUIManager.FadeOutScreenEnd = null;
+    }
+
     public void SubscribeToFadeInEvent(Action action)
     {
         gameUIManager.FadeInScreenEnd += action;

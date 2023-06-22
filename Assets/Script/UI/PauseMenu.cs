@@ -3,10 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
     [SerializeField] private PlayerInput playerInput;
+    [SerializeField] private Button resumeButton;
+    [SerializeField] private Button backToMainMenuButton;
+    [SerializeField] private Button quitButton;
+    [SerializeField] private GameObject pausePanel;
 
     private List<I_Pause> _pausables = new ();
     private InputAction _pauseAction;
@@ -20,6 +25,9 @@ public class PauseMenu : MonoBehaviour
     private void Initialize()
     {
         PlayerInputGetActions();
+        resumeButton.onClick.AddListener(Pause);
+        quitButton.onClick.AddListener(QuitGame);
+        backToMainMenuButton.onClick.AddListener(BackToMainMenu);
     }
 
     private void PlayerInputGetActions()
@@ -31,10 +39,10 @@ public class PauseMenu : MonoBehaviour
 
     private void SubscribeActions()
     {
-        _pauseAction.performed += Pause;
+        _pauseAction.performed += PauseAction;
     }
 
-    private void Pause(InputAction.CallbackContext context)
+    private void Pause()
     {
         _pause = !_pause;
         foreach (var item in _pausables)
@@ -42,9 +50,26 @@ public class PauseMenu : MonoBehaviour
         if (_pause)
         {
             Time.timeScale = 0;
+            pausePanel.SetActive(true);
             return;
         }
+        pausePanel.SetActive(false);
         Time.timeScale = 1;
+    }
+
+    private void PauseAction(InputAction.CallbackContext context)
+    {
+       Pause();
+    }
+
+    private void BackToMainMenu()
+    {
+        ChangeSceneManager.Instance.GoToMainMenu();
+    }
+
+    private void QuitGame()
+    {
+        Application.Quit();
     }
 
     public void AddI_PauseObject(I_Pause iPause)

@@ -18,6 +18,7 @@ namespace KrakenGamingTest.Obstacles
         private float _movementSpeed;
         private float _rotationSpeed;
         private bool _canFallFromStairs;
+        private bool _onAir;
 
         private Action OnPlayerJumpOver;
 
@@ -84,6 +85,7 @@ namespace KrakenGamingTest.Obstacles
 
         public void SetAirSpeed()
         {
+            _onAir = true;
             _movementSpeed = barrelData.speedOnAir;
         }
 
@@ -135,6 +137,9 @@ namespace KrakenGamingTest.Obstacles
                 return;
             }
 
+            if (!_onAir)
+                return;
+            _onAir = false;
             _movementSpeed = barrelData.speedOnGround;
             var flipChance = UnityEngine.Random.Range(0, 101);
             if (flipChance <= barrelData.flipChance)

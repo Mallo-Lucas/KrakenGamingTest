@@ -10,7 +10,8 @@ public enum UICommands
     CHANGE_BONUS_SCORE,
     SET_PLAYERS_HEARTS,
     FADE_SCREEN_IN,
-    FADE_SCREEN_OUT
+    FADE_SCREEN_OUT,
+    GAME_OVER
 }
 
 [System.Serializable]

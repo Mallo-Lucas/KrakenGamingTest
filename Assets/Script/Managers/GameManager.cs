@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     {
         LevelEventsHandler.Instance.SubscribeToFadeInEvent(RespawnPlayer);
         StartCoroutine(CastPlayerWinArea());
+        playerModel.OnGetDamage += PlayerLost;
     }
 
     private void RespawnPlayer()
@@ -27,6 +28,23 @@ public class GameManager : MonoBehaviour
             Value = 2
         });
         playerModel.RespawnPlayer(spawnPosition);
+    }
+
+    private void PlayerLost(int lifes)
+    {
+        if (lifes > 0)
+            return;
+        LevelEventsHandler.Instance.ClearFadeScreenEvents();
+        LevelEventsHandler.Instance.SubscribeToFadeInEvent(OpenGameOverUi);
+    }
+
+    private void OpenGameOverUi()
+    {
+        uiEvent.Raise(new UIParameters()
+        {
+            Command = UICommands.GAME_OVER,
+            Value = 0
+        });
     }
 
     private IEnumerator CastPlayerWinArea()
