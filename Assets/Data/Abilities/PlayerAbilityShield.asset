@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 290c48ed583f2494c9f5892043ed0520, type: 3}
+  m_Name: PlayerAbilityShield
+  m_EditorClassIdentifier: 
+  abilityStack: 1
+  abilityIcon: {fileID: 21300000, guid: 8bdce20e26a8e4342ab440894e0ebfe9, type: 3}
+  abilityShield: {fileID: 5262532014764731100, guid: 9402477eca11df440a733a761538014a,
+    type: 3}
+  shieldUpTime: 6

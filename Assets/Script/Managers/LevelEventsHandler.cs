@@ -53,4 +53,9 @@ public class LevelEventsHandler : MonoBehaviour
     {
         return scoreManager.ShurikenEvade;
     }
+
+    public Action GetScoreManagerObstacleEvadeEvent()
+    {
+        return scoreManager.ObstacleOneDirectionnEvade;
+    }
 }

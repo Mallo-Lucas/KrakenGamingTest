@@ -31,7 +31,7 @@ public class ObstaclesSpawnSystem : MonoBehaviour
     private void DestroyAllObstacles()
     {
         for (int i = 0; i < _obstaclesCreated.Count; i++)
-            _obstaclesCreated[i].DestroyObstacle();
+            _obstaclesCreated[i].PlayerFail();
         _obstaclesCreated.Clear();
     }
 
@@ -47,6 +47,11 @@ public class ObstaclesSpawnSystem : MonoBehaviour
         {
             obstacle.SetObstacleCanMove(false);
         }
+    }
+
+    public void AddObstacle(Obstacle obstacle)
+    {
+        _obstaclesCreated.Add(obstacle);
     }
 
     private void StartSpawn()

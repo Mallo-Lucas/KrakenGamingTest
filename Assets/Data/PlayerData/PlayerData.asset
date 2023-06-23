@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a1c90dcbb9f9dc4eb21cc501f497f68, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
-  playerLifes: 1
+  playerLifes: 6
   playerSpeedOnGround: 8
   playerSpeedOnAir: 4
   playerJumpForce: 40

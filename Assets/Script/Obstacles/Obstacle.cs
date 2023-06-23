@@ -37,6 +37,11 @@ public class Obstacle : MonoBehaviour
 
     }
 
+    public void PlayerFail()
+    {
+        Destroy(gameObject);
+    }
+
     public virtual IEnumerator CastPlayerEvadeArea()
     {
         yield return null;

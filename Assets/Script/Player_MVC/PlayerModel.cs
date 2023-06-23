@@ -106,7 +106,7 @@ namespace KrakenGamingTest.Player
 
         private void UseAbility()
         {
-            if (_playerAbilityStack <= 0 || _onUseAbility)
+            if (_playerAbilityStack <= 0 || _onUseAbility || _playerAbility == null)
                 return;
             _playerAbilityStack--;
             _playerAbility.UseAbility(this);
@@ -221,6 +221,13 @@ namespace KrakenGamingTest.Player
             playerCollider.enabled = true;
             transform.position = spawnPoint.position;
             transform.rotation = spawnPoint.rotation;
+            if (_playerAbility != null)
+            {
+                _playerAbility.AbilityRemove(this);
+                GetAbility?.Invoke(_playerAbility.abilityIcon, _playerAbility.abilityStack, false);
+                _playerAbility = null;
+                _playerAbilityStack = 0;
+            }        
             _canMove = false;
             _onGround = true;
             _canClimb = false;

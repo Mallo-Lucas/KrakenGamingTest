@@ -9,5 +9,6 @@ public class GamePointsData : ScriptableObject
     public int pointToSubstractPerSecond;
     public int jumpBarrelPoint;
     public int evadeShurikenPoint;
+    public int evadeOneDirectionObstacle;
     public float barrelsJumpedConsecutivelyTimer;
 }

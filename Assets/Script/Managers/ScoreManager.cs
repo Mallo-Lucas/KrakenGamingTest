@@ -38,6 +38,12 @@ public class ScoreManager : MonoBehaviour
         UpdateScoreUi();
     }
 
+    public void ObstacleOneDirectionnEvade()
+    {
+        _currentScore += gamePointsData.evadeOneDirectionObstacle;
+        UpdateScoreUi();
+    }
+
     private void Initialize()
     {
         _bonusScore = gamePointsData.bonusScore;

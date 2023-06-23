@@ -29,6 +29,11 @@ public class PlayerView : MonoBehaviour
 
     private static readonly WaitForSeconds DELAY_DEAD = new WaitForSeconds(2);
 
+    private void Start()
+    {
+        LevelEventsHandler.Instance.PlayerWin += () => animator.gameObject.SetActive(false);
+    }
+
     public void GetSubscriptionsEvents(PlayerModel player)
     {
         player.OnMove += MovementHandler;

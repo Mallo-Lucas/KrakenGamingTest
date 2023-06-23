@@ -16,4 +16,5 @@ MonoBehaviour:
   pointToSubstractPerSecond: 100
   jumpBarrelPoint: 100
   evadeShurikenPoint: 200
+  evadeOneDirectionObstacle: 50
   barrelsJumpedConsecutivelyTimer: 0.2
