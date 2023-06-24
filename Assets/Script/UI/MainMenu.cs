@@ -51,6 +51,9 @@ public class MainMenu : MonoBehaviour
             sliderGeneralVolume.value = 0.5f;
             sliderMusicVolume.value = 0.5f;
             sliderEffectsVolume.value = 0.5f;
+            dataManager.GetData().GeneralVolume = 0.5f;
+            dataManager.GetData().MusicVolume = 0.5f;
+            dataManager.GetData().EffectsVolume = 0.5f;
             dataManager.GetData().gamePlayed = true;
             dataManager.Save();
         }

@@ -161,6 +161,8 @@ public class PlayerView : MonoBehaviour
     private void RespawnPlayerHandler()
     {
         animator.gameObject.SetActive(true);
+        animator.SetBool(ON_GROUND, true);
+        animator.SetBool(ON_STAIRS, false);
         _playerVisual.rotation = Quaternion.Euler(0, -90, 0);
         Destroy(_lastRagdollCreated);
     }

@@ -1,7 +1,6 @@
-using KrakenGamingTest.Player;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
@@ -12,12 +11,18 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] private Button backToMainMenuButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject optionsPanel;
+    [SerializeField] private Slider sliderGeneralVolume;
+    [SerializeField] private Slider sliderMusicVolume;
+    [SerializeField] private Slider sliderEffectsVolume;
+    [SerializeField] private DataManager dataManager;
+    [SerializeField] private AudioMixer masterMixer;
 
     private List<I_Pause> _pausables = new ();
     private InputAction _pauseAction;
     private bool _pause;
 
-    private void Awake()
+    private void Start()
     {
         Initialize();
     }
@@ -28,6 +33,14 @@ public class PauseMenu : MonoBehaviour
         resumeButton.onClick.AddListener(Pause);
         quitButton.onClick.AddListener(QuitGame);
         backToMainMenuButton.onClick.AddListener(BackToMainMenu);
+
+        sliderGeneralVolume.onValueChanged.AddListener(ChangeGeneralVolume);
+        sliderMusicVolume.onValueChanged.AddListener(ChangeMusicVolume);
+        sliderEffectsVolume.onValueChanged.AddListener(ChangeEffectsVolume);
+
+        sliderGeneralVolume.value = dataManager.GetData().GeneralVolume;
+        sliderMusicVolume.value = dataManager.GetData().MusicVolume;
+        sliderEffectsVolume.value = dataManager.GetData().EffectsVolume;
     }
 
     private void PlayerInputGetActions()
@@ -42,7 +55,7 @@ public class PauseMenu : MonoBehaviour
         _pauseAction.performed += PauseAction;
     }
 
-    private void Pause()
+    public void Pause()
     {
         _pause = !_pause;
         foreach (var item in _pausables)
@@ -54,6 +67,7 @@ public class PauseMenu : MonoBehaviour
             return;
         }
         pausePanel.SetActive(false);
+        optionsPanel.SetActive(false);
         Time.timeScale = 1;
     }
 
@@ -75,5 +89,23 @@ public class PauseMenu : MonoBehaviour
     public void AddI_PauseObject(I_Pause iPause)
     {
         _pausables.Add(iPause); 
+    }
+
+    public void ChangeGeneralVolume(float newValue)
+    {
+        masterMixer.SetFloat("MasterVolume", Mathf.Log10(sliderGeneralVolume.value) * 20);
+        dataManager.GetData().GeneralVolume = newValue;
+    }
+
+    public void ChangeMusicVolume(float newValue)
+    {
+        masterMixer.SetFloat("MusicVolume", Mathf.Log10(sliderMusicVolume.value) * 20);
+        dataManager.GetData().MusicVolume = newValue;
+    }
+
+    public void ChangeEffectsVolume(float newValue)
+    {
+        masterMixer.SetFloat("EffectsVolume", Mathf.Log10(sliderEffectsVolume.value) * 20);
+        dataManager.GetData().EffectsVolume = newValue;
     }
 }

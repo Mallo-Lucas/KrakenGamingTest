@@ -120,6 +120,7 @@ namespace KrakenGamingTest.Player
 
         public void AddAbility(PlayerAbility playerAbility)
         {
+            EnableSword(false);
             _playerAbility = playerAbility;
             _playerAbilityStack = (int)_playerAbility.abilityStack;
             _playerAbility.AbilityAdded(this);
@@ -227,10 +228,11 @@ namespace KrakenGamingTest.Player
                 GetAbility?.Invoke(_playerAbility.abilityIcon, _playerAbility.abilityStack, false);
                 _playerAbility = null;
                 _playerAbilityStack = 0;
-            }        
+            }       
+            SetCanClimb(false);
+            EnableSword(false);
             _canMove = false;
             _onGround = true;
-            _canClimb = false;
             _onCrouch = false;
             rb.useGravity = true;
             _movementSpeed = playerData.playerSpeedOnGround;
