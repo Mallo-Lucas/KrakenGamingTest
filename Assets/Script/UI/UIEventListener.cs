@@ -15,6 +15,7 @@ public enum UICommands
     ACTIVATE_ABILITY_UI,
     CHANGE_ABILITY_ICON,
     CHANEGE_ABILITY_AMMOUNT,
+    OPEN_LEADERBOARDs
 }
 
 [System.Serializable]

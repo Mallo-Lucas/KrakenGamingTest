@@ -44,6 +44,19 @@ public class CutSceneManager : MonoBehaviour
         });
         if(!lastLevel)
             LevelEventsHandler.Instance.SubscribeToFadeInEvent(()=> ChangeSceneManager.Instance.GoToNextScene());
+        else
+        {
+            LevelEventsHandler.Instance.SubscribeToFadeInEvent(OpenLeaderboard);
+        }
+    }
+
+    private void OpenLeaderboard()
+    {
+        uiEvent.Raise(new UIParameters()
+        {
+            Command = UICommands.OPEN_LEADERBOARDs,
+            State = true
+        });
     }
 
 }

@@ -18,6 +18,7 @@ public class InGameUIManager : MonoBehaviour
     [SerializeField] private Button backToMainMenuButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private Image blackScreen;
+    [SerializeField] private GameObject leaderboardPanel;
 
     private List<GameObject> _heartsCreatedList = new List<GameObject>();
     private Dictionary<int, Action<float>> _uiEventDeployerNumbers;
@@ -46,6 +47,7 @@ public class InGameUIManager : MonoBehaviour
         _uiEventDeployerStates = new Dictionary<int, Action<bool>>()
         {
            { (int)UICommands.ACTIVATE_ABILITY_UI, EnableAbilityUI },
+           { (int)UICommands.OPEN_LEADERBOARDs, OpenLeaderBoardPanel },
         };
 
         _uiEventDeployerSprites= new Dictionary<int, Action<Sprite>>()
@@ -54,6 +56,11 @@ public class InGameUIManager : MonoBehaviour
         };
 
         BlackScreenFadeOut(2);
+    }
+
+    public void OpenLeaderBoardPanel(bool state)
+    {
+        leaderboardPanel.SetActive(true);
     }
 
     private void ChangeAbilityAmmount(float ammount)

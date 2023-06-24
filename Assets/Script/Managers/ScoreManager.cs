@@ -15,6 +15,8 @@ public class ScoreManager : MonoBehaviour
     private float _barrelsJumpedConsecutivelyTimer;
     private bool _barrelsJumped;
 
+    public float GetCurrentScore() => _currentScore;
+
     private void Start()
     {
         Initialize();
@@ -52,6 +54,8 @@ public class ScoreManager : MonoBehaviour
         LevelEventsHandler.Instance.SubscribeToFadeOutEvent(StartGame);
         LevelEventsHandler.Instance.SubscribeToFadeInEvent(SetInitialBonusScore);
         LevelEventsHandler.Instance.PlayerWin += GetFinalScore;
+        _currentScore = (int)LevelEventsHandler.Instance.GetDataManager().GetData().currentGameScore;
+        UpdateScoreUi();
     }
 
     private void PlayerLost(int value)
@@ -74,6 +78,9 @@ public class ScoreManager : MonoBehaviour
     {
         _currentScore += _bonusScore;
         _bonusScore = 0;
+        var dataManager = LevelEventsHandler.Instance.GetDataManager();
+        dataManager.GetData().currentGameScore = _currentScore;
+        dataManager.Save();
         UpdateBonusScoreUi();
         UpdateScoreUi();
     }

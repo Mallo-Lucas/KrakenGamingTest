@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -18,6 +19,8 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Slider sliderEffectsVolume;
     [SerializeField] private DataManager dataManager;
     [SerializeField] private AudioMixer masterMixer;
+    [SerializeField] private ScoreProfile scoreProfilePrefab;
+    [SerializeField] private Transform scoreProfileContent;
 
     private static readonly string MENU_HIDE = "Hide";
     private static readonly string CUTSCENE_START_GAME = "MainMenuStartGame";
@@ -37,9 +40,67 @@ public class MainMenu : MonoBehaviour
         sliderMusicVolume.onValueChanged.AddListener(ChangeMusicVolume);
         sliderEffectsVolume.onValueChanged.AddListener(ChangeEffectsVolume);
 
-        sliderGeneralVolume.value = dataManager.GetData().GeneralVolume;
-        sliderMusicVolume.value = dataManager.GetData().MusicVolume;
-        sliderEffectsVolume.value = dataManager.GetData().EffectsVolume;
+        if (dataManager.GetData().gamePlayed)
+        {
+            sliderGeneralVolume.value = dataManager.GetData().GeneralVolume;
+            sliderMusicVolume.value = dataManager.GetData().MusicVolume;
+            sliderEffectsVolume.value = dataManager.GetData().EffectsVolume;
+        }
+        else
+        {
+            sliderGeneralVolume.value = 0.5f;
+            sliderMusicVolume.value = 0.5f;
+            sliderEffectsVolume.value = 0.5f;
+            dataManager.GetData().gamePlayed = true;
+            dataManager.Save();
+        }
+        dataManager.GetData().currentGameScore = 0;
+        LoadLeaderboardProfiles();
+    }
+
+    private void LoadLeaderboardProfiles()
+    {
+        var scores = dataManager.GetData().maxScores;
+
+        if (scores.Count == 0)
+            return;
+
+        var names = dataManager.GetData().playerNames;
+
+        Dictionary<string, float> profiles = new();
+
+        for (int i = 0; i < scores.Count; i++)
+        {
+            if (profiles.ContainsKey(names[i]))
+            {
+                float biggestScore = 0;
+
+                if (profiles[names[i]] > scores[i])
+                    biggestScore = profiles[names[i]];
+                else
+                    biggestScore = scores[i];
+
+                profiles[names[i]] = biggestScore;
+                continue;
+            }
+            profiles.Add(names[i], scores[i]);
+        }
+
+        var newProfiles = profiles.OrderByDescending(x => x.Value).Take(5);
+
+        dataManager.GetData().maxScores.Clear();
+        dataManager.GetData().playerNames.Clear();
+
+        foreach (var item in newProfiles)
+        {
+            var profile = Instantiate(scoreProfilePrefab);
+            profile.Initialize(item.Key,item.Value.ToString());
+            profile.transform.parent = scoreProfileContent;
+            dataManager.GetData().maxScores.Add(item.Value);
+            dataManager.GetData().playerNames.Add(item.Key);
+        }
+
+        dataManager.Save();
     }
 
     private void StartGame()

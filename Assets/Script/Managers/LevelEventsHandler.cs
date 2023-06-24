@@ -1,3 +1,4 @@
+using KrakenGamingTest.Player;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ public class LevelEventsHandler : MonoBehaviour
     [SerializeField] private ScoreManager scoreManager;
     [SerializeField] private PauseMenu pauseMenu;
     [SerializeField] private ObstaclesSpawnSystem obstaclesSpawnSystem;
+    [SerializeField] private DataManager dataManager;
 
     public static LevelEventsHandler Instance;
 
@@ -42,6 +44,16 @@ public class LevelEventsHandler : MonoBehaviour
     public void SubscribeToPauseMenu(I_Pause pause)
     {
         pauseMenu.AddI_PauseObject(pause);
+    }
+
+    public DataManager GetDataManager()
+    {
+        return dataManager;
+    }
+
+    public float GetFinalScore()
+    {
+        return scoreManager.GetCurrentScore();
     }
 
     public Action GetScoreManagerBarrelEvent()
