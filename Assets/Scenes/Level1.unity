@@ -15460,7 +15460,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poolData: {fileID: 11400000, guid: 6ebace4a4b9325a4099c31cb39bf4cca, type: 2}
   audioSource: {fileID: 1514208769}
-  playerModel: {fileID: 0}
+  playerModel: {fileID: 389268400}
 --- !u!1001 &1528819450
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,8 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 [CreateAssetMenu(menuName = "ScriptableObject/SpawnObstaclesData", fileName = "SpawnObstaclesData", order = 0)]
 public class SpawnObstaclesData : ScriptableObject
